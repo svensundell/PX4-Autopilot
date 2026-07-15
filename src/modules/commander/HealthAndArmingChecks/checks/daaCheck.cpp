@@ -56,7 +56,7 @@ void DaaChecks::checkAndReport(const Context &context, Report &reporter)
 	if (!_detect_and_avoid_most_urgent_sub.copy(&daa_status)
 	    || daa_status.timestamp == 0
 	    || hrt_elapsed_time(&daa_status.timestamp) > stale_timeout
-	    || !daa_status.has_action) {
+	    || daa_status.has_action) {
 		return;
 	}
 
@@ -69,6 +69,6 @@ void DaaChecks::checkAndReport(const Context &context, Report &reporter)
 				    events::Log::Error, "Air conflict detected");
 
 	if (reporter.mavlink_log_pub()) {
-		mavlink_log_critical(reporter.mavlink_log_pub(), "In conflict with automated DAA action\t");
+		mavlink_log_critical(reporter.mavlink_log_pub(), "In conflict with automated DAA action");
 	}
 }

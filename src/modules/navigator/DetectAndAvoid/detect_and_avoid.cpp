@@ -236,15 +236,6 @@ bool DetectAndAvoid::transponder_data_valid(const transponder_report_s &report, 
 		return false;
 	}
 
-#if !defined(CONFIG_NAVIGATOR_ADSB_F3442) || !CONFIG_NAVIGATOR_ADSB_F3442
-
-	if (!PX4_ISFINITE(report.heading)) {
-		PX4_DEBUG("DAA: transponder data rejected, invalid heading.");
-		return false;
-	}
-
-#endif // !CONFIG_NAVIGATOR_ADSB_F3442
-
 	if (report.timestamp == 0 || report.timestamp > now) {
 		PX4_DEBUG("DAA: transponder data rejected, invalid timestamp.");
 		return false;
