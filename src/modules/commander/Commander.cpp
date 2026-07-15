@@ -2066,7 +2066,7 @@ void Commander::run()
 			const bool should_arm_on_boot = _arm_on_boot_requested
 							&& !_arm_on_boot_done
 							&& !isArmed()
-							&& hrt_elapsed_time(&_boot_timestamp) > 5_s
+							&& hrt_elapsed_time(&_boot_timestamp) > kMinBootDelayBeforeAutoArm
 							&& pre_flight_checks_pass;
 
 			if (should_arm_on_boot) {

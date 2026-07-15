@@ -100,6 +100,9 @@ class Commander : public ModuleBase, public ModuleParams
 public:
 	static Descriptor desc;
 
+	/** Minimum time after boot before COM_ARM_ON_BOOT may attempt to arm. */
+	static constexpr hrt_abstime kMinBootDelayBeforeAutoArm{1_s};
+
 	Commander();
 	~Commander();
 
