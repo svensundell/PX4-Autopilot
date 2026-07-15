@@ -52,6 +52,7 @@ add_custom_target(failsafe_uorb_struct_header DEPENDS ${generated_uorb_struct_fi
 add_executable(failsafe_test EXCLUDE_FROM_ALL
 	emscripten.cpp
 	failsafe.cpp
+	failsafe_param_mapping.cpp
 	framework.cpp
 	)
 set_property(TARGET failsafe_test PROPERTY UNITY_BUILD ON) # avoids some method calls to e.g. param_name or param_type
@@ -74,6 +75,7 @@ target_link_libraries(failsafe_test
 
 px4_add_library(failsafe
 	failsafe.cpp
+	failsafe_param_mapping.cpp
 	framework.cpp
 )
 

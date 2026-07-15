@@ -34,6 +34,7 @@
 #pragma once
 
 #include "framework.h"
+#include "failsafe_param_mapping.hpp"
 
 
 class Failsafe : public FailsafeBase
@@ -61,59 +62,6 @@ private:
 		AltitudeCruise = (1 << 4)
 	};
 
-	// COM_LOW_BAT_ACT parameter values
-	enum class LowBatteryAction : int32_t {
-		Warning = 0,        // Warning
-		Return = 1,         // Return mode (deprecated)
-		Land = 2,           // Land mode
-		ReturnOrLand = 3    // Return mode at critically low level, Land mode at current position if reaching dangerously low levels
-	};
-
-	enum class offboard_loss_failsafe_mode : int32_t {
-		Position_mode = 0,
-		Altitude_mode = 1,
-		Stabilized = 2,
-		Return_mode = 3,
-		Land_mode = 4,
-		Hold_mode = 5,
-		Terminate = 6,
-		Disarm = 7,
-	};
-
-	enum class actuator_failure_failsafe_mode : int32_t {
-		Warning_only = 0,
-		Hold_mode = 1,
-		Land_mode = 2,
-		Return_mode = 3,
-		Terminate = 4,
-	};
-
-	enum class geofence_violation_action : int32_t {
-		None = 0,
-		Warning = 1,
-		Hold_mode = 2,
-		Return_mode = 3,
-		Terminate = 4,
-		Land_mode = 5,
-	};
-
-	enum class gcs_connection_loss_failsafe_mode : int32_t {
-		Disabled = 0,
-		Hold_mode = 1,
-		Return_mode = 2,
-		Land_mode = 3,
-		Terminate = 5,
-		Disarm = 6,
-		Hold_mode_no_failsafe = 7, ///< No failsafe: Commander switches to Hold as a regular mode change (NAV_RCL_ACT only)
-	};
-
-	enum class command_after_quadchute : int32_t {
-		Warning_only = -1,
-		Return_mode = 0,
-		Land_mode = 1,
-		Hold_mode = 2,
-	};
-
 	// COM_RC_IN_MODE parameter values
 	enum class RcInMode : int32_t {
 		RcOnly = 0,
@@ -127,70 +75,12 @@ private:
 		PriorityMavlinkDescendingThenRc = 8
 	};
 
-	enum class command_after_high_wind_failsafe : int32_t {
-		None = 0,
-		Warning = 1,
-		Hold_mode = 2,
-		Return_mode = 3,
-		Terminate = 4,
-		Land_mode = 5
-	};
-
-	enum class command_after_pos_low_failsafe : int32_t {
-		None = 0,
-		Warning = 1,
-		Hold_mode = 2,
-		Return_mode = 3,
-		Terminate = 4,
-		Land_mode = 5
-	};
-
-	enum class command_after_remaining_flight_time_low : int32_t {
-		None = 0,
-		Warning = 1,
-		Return_mode = 3
-	};
-
-	enum class open_drone_id_failsafe_mode : int32_t {
-		None = 0,
-		Warning = 1,
-		Error = 2,
-		Return_mode = 3,
-		Land_mode = 4,
-		Terminate = 5,
-	};
-
-	enum class parachute_unhealthy_failsafe_mode : int32_t {
-		Disabled = 0,
-		Warning = 1,
-		Return = 2,
-		Land = 3,
-	};
-
-	enum class gps_redundancy_failsafe_mode : int32_t {
-		Warning = 0,
-		Return_mode = 1,
-		Land_mode = 2,
-		Terminate = 3,
-	};
-
-	static ActionOptions fromNavDllOrRclActParam(int param_value);
-
-	static ActionOptions fromGfActParam(int param_value);
-	static ActionOptions fromActuatorFailureActParam(int param_value);
-	static ActionOptions fromBatteryWarningActParam(int param_value, uint8_t battery_warning);
-	static ActionOptions fromQuadchuteActParam(int param_value);
-	static Action fromOffboardLossActParam(int param_value, uint8_t &user_intended_mode);
-	static ActionOptions fromHighWindLimitActParam(int param_value);
-	static ActionOptions fromPosLowActParam(int param_value);
-	static ActionOptions fromRemainingFlightTimeLowActParam(int param_value);
-	static ActionOptions fromOdidFailActParam(int param_value);
-	static ActionOptions fromParachuteActParam(int param_value);
-	static ActionOptions fromGnssLossActParam(int param_value);
-
 	static bool isFailsafeIgnored(uint8_t user_intended_mode, int32_t exception_mask_parameter);
 
-	Action manualControlLossFallbackAction() const { return fromNavDllOrRclActParam(_param_nav_rcl_act.get()).action; }
+	Action manualControlLossFallbackAction() const
+	{
+		return failsafe_param_mapping::fromNavDllOrRclActParam(_param_nav_rcl_act.get()).action;
+	}
 
 	const int _caller_id_mode_fallback{genCallerId()};
 	bool _last_state_mode_fallback{false};
