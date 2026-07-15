@@ -293,7 +293,7 @@ bool Ekf::isGnssPosResetAllowed() const
 		break;
 
 	case GnssMode::kDeadReckoning:
-		if (isOtherSourceOfHorizontalAidingThan(_control_status.flags.gnss_pos)) {
+		if (isOtherSourceOfHorizontalPositionAidingThan(_control_status.flags.gnss_pos)) {
 			allowed = false;
 		}
 

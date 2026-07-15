@@ -493,12 +493,14 @@ void FailsafeBase::getSelectedAction(const State &state, const failsafe_flags_s 
 		return;
 	}
 
-	// Check if we should enter delayed Hold
+	// Check if we should enter delayed Hold before the selected action.
+	// RTL is excluded: return-home should begin immediately once the link-loss timeout expires.
 	const bool action_can_be_delayed = selected_action != Action::None &&
 					   selected_action != Action::Warn &&
 					   selected_action != Action::Disarm &&
 					   selected_action != Action::Terminate &&
-					   selected_action != Action::Hold;
+					   selected_action != Action::Hold &&
+					   selected_action != Action::RTL;
 
 	if (_current_delay > 0 && !_user_takeover_active && allow_user_takeover <= UserTakeoverAllowed::AlwaysModeSwitchOnly
 	    && action_can_be_delayed) {
