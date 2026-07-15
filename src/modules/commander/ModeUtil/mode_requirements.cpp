@@ -94,14 +94,10 @@ void getModeRequirements(uint8_t vehicle_type, failsafe_flags_s &flags)
 	setRequirement(vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, flags.mode_req_angular_velocity);
 	setRequirement(vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, flags.mode_req_attitude);
 
-	if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		setRequirement(vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, flags.mode_req_global_position_relaxed);
-		setRequirement(vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, flags.mode_req_local_position_relaxed);
-
-	} else {
-		setRequirement(vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, flags.mode_req_global_position);
-		setRequirement(vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, flags.mode_req_local_position);
-	}
+	// Mission position requirements: use relaxed accuracy for all vehicle types so degraded
+	// estimates (e.g. optical flow) can still run auto missions when GNSS is unavailable.
+	setRequirement(vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, flags.mode_req_global_position_relaxed);
+	setRequirement(vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, flags.mode_req_local_position_relaxed);
 
 	setRequirement(vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, flags.mode_req_local_alt);
 	setRequirement(vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, flags.mode_req_mission);
@@ -144,7 +140,7 @@ void getModeRequirements(uint8_t vehicle_type, failsafe_flags_s &flags)
 	}
 
 	setRequirement(vehicle_status_s::NAVIGATION_STATE_AUTO_RTL, flags.mode_req_local_alt);
-	setRequirement(vehicle_status_s::NAVIGATION_STATE_AUTO_RTL, flags.mode_req_home_position);
+	// Home is set by the navigator when RTL is commanded; do not block mode entry on home validity.
 	setRequirement(vehicle_status_s::NAVIGATION_STATE_AUTO_RTL, flags.mode_req_prevent_arming);
 
 	// NAVIGATION_STATE_ACRO
